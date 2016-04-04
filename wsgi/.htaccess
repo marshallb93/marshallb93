@@ -1,0 +1,10 @@
+RewriteEngine On
+
+# marshallbradley.com to www.marshallbradley.com
+RewriteCond %{HTTP_HOST} ^marshallbradley\.com$ [NC]
+RewriteRule ^ http://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
+
+# http to https for subdomains
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
