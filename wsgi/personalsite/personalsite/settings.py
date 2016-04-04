@@ -48,10 +48,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-# GETTING-STARTED: change 'myproject' to your project name:
-ROOT_URLCONF = 'myproject.urls'
+ROOT_URLCONF = 'personalsite.urls'
 
-WSGI_APPLICATION = 'myproject.wsgi.application'
+WSGI_APPLICATION = 'personalsite.wsgi.application'
 
 
 # Database
