@@ -72,15 +72,16 @@ body {
         #icons {
             -webkit-padding-start: 0px;
             margin-top: 6vh;
+            font-size: 7vw;
 
             .fa {
                 color: black;
                 margin-right: 0.1em;
                 margin-left: 0.1em;
-                -webkit-transition: $transition-speed ease-in-out;
-                -moz-transition: $transition-speed ease-in-out;
-                -o-transition: $transition-speed ease-in-out;
-                transition: $transition-speed ease-in-out;
+                -webkit-transition: $transition-speed ease-out;
+                -moz-transition: $transition-speed ease-out;
+                -o-transition: $transition-speed ease-out;
+                transition: $transition-speed ease-out;
             }
 
             .fa:hover {

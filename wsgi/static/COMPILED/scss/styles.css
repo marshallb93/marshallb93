@@ -44,15 +44,16 @@ body {
       -webkit-margin-after: 0.5em; }
     body #middle-box #icons {
       -webkit-padding-start: 0px;
-      margin-top: 6vh; }
+      margin-top: 6vh;
+      font-size: 7vw; }
       body #middle-box #icons .fa {
         color: black;
         margin-right: 0.1em;
         margin-left: 0.1em;
-        -webkit-transition: 0.3s ease-in-out;
-        -moz-transition: 0.3s ease-in-out;
-        -o-transition: 0.3s ease-in-out;
-        transition: 0.3s ease-in-out; }
+        -webkit-transition: 0.3s ease-out;
+        -moz-transition: 0.3s ease-out;
+        -o-transition: 0.3s ease-out;
+        transition: 0.3s ease-out; }
       body #middle-box #icons .fa:hover {
         color: #4F5866;
         transform: scale(1.3); }
