@@ -1,10 +1,13 @@
+{% load compile_static %}
+{% load static %}
 {% load staticfiles %}
 
 <html>
 
     <head>
         <title>Marshall Bradley - Software Developer</title>
-        <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+        <link rel="stylesheet" href="{% static "scss/styles.scss"|compile %}" />
+        <link rel="stylesheet" href="{% static "scss/mobile.scss"|compile %}" />
     </head>
 
     <body>

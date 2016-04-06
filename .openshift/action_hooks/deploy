@@ -18,3 +18,8 @@ fi
 
 echo "Executing 'python $OPENSHIFT_REPO_DIR/wsgi/personalsite/manage.py collectstatic --noinput'"
 python "$OPENSHIFT_REPO_DIR"wsgi/personalsite/manage.py collectstatic --noinput
+
+# Install SASS pre-processor
+
+pip install django-static-precompiler
+gem install sass

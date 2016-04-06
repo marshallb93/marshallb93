@@ -1,0 +1,40 @@
+/* VARIABLES */
+/* MIXINS */
+/* STYLES */
+body {
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  margin: 0px;
+  background-color: #4F5866;
+  overflow: hidden; }
+  body #background {
+    padding-left: 1vw;
+    position: absolute;
+    text-align: left;
+    z-index: -1;
+    position: fixed;
+    bottom: 0; }
+    body #background #code {
+      color: transparent;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      font-family: "Lucida Console", monospace; }
+  body #middle-box {
+    background-filter: blur(5px);
+    position: relative;
+    top: 40%;
+    -webkit-transform: translateY(-40%);
+    -ms-transform: translateY(-40%);
+    transform: translateY(-40%);
+    border-radius: 25px;
+    padding: 20px;
+    width: 60%;
+    height: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    background: rgba(255, 255, 255, 0.7); }
+    body #middle-box h1 {
+      font-size: 4em;
+      font-size: 3vw; }
+    body #middle-box h2 {
+      font-size: 3em;
+      font-size: 2.25vw; }
