@@ -5,7 +5,9 @@ $console-font: 'Lucida Console', monospace;
 $fallback-title-size: 4em;
 $title-size: 7vmin;
 $background-grey: #4F5866;
+$lighter-grey: #717F93;
 $icon-orange: #E39B00;
+$error-text-size: 20vw;
 $transition-speed: 0.3s;
 
 /* MIXINS */
@@ -27,6 +29,38 @@ body {
     margin: 0px;
     background-color: $background-grey;
     overflow: hidden;
+
+    #error  {
+
+        h1 {
+            @include vertical-align(-40%);
+            color: white;
+            text-shadow: 3px 3px 0px $background-grey, 5px 5px 0px $lighter-grey;
+            font: $error-text-size $console-font;
+            font-weight: bold;
+        }
+
+        #home {
+            -webkit-padding-start: 0px;
+            margin-top: 6vh;
+            font-size: 16vmin;
+
+            .fa {
+                color: $lighter-grey;
+                margin-right: 0.1em;
+                margin-left: 0.1em;
+                -webkit-transition: $transition-speed ease-out;
+                -moz-transition: $transition-speed ease-out;
+                -o-transition: $transition-speed ease-out;
+                transition: $transition-speed ease-out;
+            }
+
+            .fa:hover {
+                transform: scale(1.5);
+                color: white;
+            }
+        }
+    }
 
     #background {
 
