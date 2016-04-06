@@ -1,10 +1,10 @@
 /* VARIABLES */
 
-$title-size: 70%;
 $font: 'Montserrat', sans-serif;
 $console-font: 'Lucida Console', monospace;
 $fallback-title-size: 4em;
-$title-size: 3vw;
+$title-size: 7vmin;
+$background-grey: #4F5866;
 
 /* MIXINS */
 
@@ -23,7 +23,7 @@ body {
     text-align: center;
     font-family: $font;
     margin: 0px;
-    background-color: #4F5866;
+    background-color: $background-grey;
     overflow: hidden;
 
     #background {
@@ -57,11 +57,29 @@ body {
         h1 {
             font-size: $fallback-title-size;
             font-size: $title-size;
+            -webkit-margin-before: 0.5em;
+            -webkit-margin-after: 0.5em;
         }
 
         h2 {
             font-size: $fallback-title-size * 0.75;
             font-size: $title-size * 0.75;
+            -webkit-margin-before: 0.5em;
+            -webkit-margin-after: 0.5em;
+        }
+
+        #icons {
+            -webkit-padding-start: 0px;
+            margin-top: 6vh;
+            .fa {
+                color: black;
+                margin-right: 10px;
+
+            }
+
+            .fa:hover {
+                color: $background-grey;
+            }
         }
     }
 }

@@ -34,7 +34,19 @@ body {
     background: rgba(255, 255, 255, 0.7); }
     body #middle-box h1 {
       font-size: 4em;
-      font-size: 3vw; }
+      font-size: 7vmin;
+      -webkit-margin-before: 0.5em;
+      -webkit-margin-after: 0.5em; }
     body #middle-box h2 {
       font-size: 3em;
-      font-size: 2.25vw; }
+      font-size: 5.25vmin;
+      -webkit-margin-before: 0.5em;
+      -webkit-margin-after: 0.5em; }
+    body #middle-box #icons {
+      -webkit-padding-start: 0px;
+      margin-top: 6vh; }
+      body #middle-box #icons .fa {
+        color: black;
+        margin-right: 10px; }
+      body #middle-box #icons .fa:hover {
+        color: #4F5866; }
