@@ -16,7 +16,7 @@ BASE_DIR = os.path.dirname(DJ_PROJECT_DIR)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'mysecretkey'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '.marshallbradley.com']
 
