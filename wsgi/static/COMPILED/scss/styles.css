@@ -47,6 +47,14 @@ body {
       margin-top: 6vh; }
       body #middle-box #icons .fa {
         color: black;
-        margin-right: 10px; }
+        margin-right: 0.1em;
+        margin-left: 0.1em;
+        -webkit-transition: 0.3s ease-in-out;
+        -moz-transition: 0.3s ease-in-out;
+        -o-transition: 0.3s ease-in-out;
+        transition: 0.3s ease-in-out; }
       body #middle-box #icons .fa:hover {
-        color: #4F5866; }
+        color: #4F5866;
+        transform: scale(1.3); }
+
+/* ANIMATIONS */
