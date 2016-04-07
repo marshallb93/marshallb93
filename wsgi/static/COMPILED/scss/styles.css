@@ -46,17 +46,17 @@ body {
   body #middle-box {
     background-filter: blur(5px);
     position: relative;
-    top: 40%;
-    -webkit-transform: translateY(-40%);
-    -ms-transform: translateY(-40%);
-    transform: translateY(-40%);
+    top: 45%;
+    -webkit-transform: translateY(-45%);
+    -ms-transform: translateY(-45%);
+    transform: translateY(-45%);
     border-radius: 25px;
     padding: 20px;
     width: 60%;
-    height: 50%;
+    height: 40%;
     margin-left: auto;
     margin-right: auto;
-    background: rgba(255, 255, 255, 0.7); }
+    background: rgba(255, 255, 255, 0.65); }
     body #middle-box #hidden {
       display: none; }
       body #middle-box #hidden i {
@@ -72,12 +72,14 @@ body {
         overflow-y: auto; }
     body #middle-box h1 {
       font-size: 4em;
-      font-size: 7vmin;
+      font-size: 6vmin;
       -webkit-margin-before: 0.5em;
       -webkit-margin-after: 0em;
       display: inline-block;
       background: #4F5866;
-      color: rgba(255, 255, 255, 0.7);
+      display: inline-block;
+      margin: auto;
+      color: rgba(255, 255, 255, 0.65);
       padding: 10px;
       border-radius: 10px; }
     body #middle-box h1:hover {
@@ -90,7 +92,7 @@ body {
     body #middle-box h2 {
       color: #4F5866;
       font-size: 3em;
-      font-size: 5.25vmin;
+      font-size: 4.5vmin;
       -webkit-margin-before: 0.5em;
       -webkit-margin-after: 0.5em;
       position: relative;
