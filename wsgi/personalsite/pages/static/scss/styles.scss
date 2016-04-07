@@ -22,8 +22,12 @@ $transition-speed: 0.3s;
 
 /* STYLES */
 
-body {
+html {
+    height: 100%;
+}
 
+body {
+    height: 100%;
     text-align: center;
     font-family: $font;
     margin: 0px;
@@ -91,6 +95,7 @@ body {
         background: rgba(255,255,255,0.65);
 
         #hidden {
+            height: 100%;
             display: none;
             i {
                 float: right;
@@ -99,12 +104,13 @@ body {
             i:hover {
                 color: #BB0706;
                 cursor: hand;
+                cursor: pointer;
             }
 
             p {
                 word-wrap: break-word;
                 max-width: 100%;
-                max-height: 90%;
+                max-height: 80%;
                 text-align: left;
                 overflow-y: auto;
             }
@@ -126,6 +132,7 @@ body {
 
         h1:hover {
             cursor: hand;
+            cursor: pointer;
             background: $lighter-grey;
         }
 
@@ -139,14 +146,14 @@ body {
             color: $background-grey;
             font-size: $fallback-title-size * 0.75;
             font-size: $title-size * 0.75;
-            -webkit-margin-before: 0.5em;
-            -webkit-margin-after: 0.5em;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
             position: relative;
             font-style: italic;
         }
 
         #icons {
-            -webkit-padding-start: 0px;
+            padding-left: 0px;
             margin-top: 6vh;
             font-size: 9.1vmin;
 
