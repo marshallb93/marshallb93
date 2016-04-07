@@ -48,8 +48,8 @@ window.onload = function() {
 
 $(document).ready(function(){
    $("#hide").click(function(event){
-     $("#visible").fadeOut();
-     $("#hidden").delay(500).fadeIn();
+     $("#visible").delay(150).fadeOut();
+     $("#hidden").delay(650).fadeIn();
    });
    $("#show").click(function(event){
      $("#hidden").fadeOut();

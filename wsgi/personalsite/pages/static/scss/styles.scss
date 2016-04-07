@@ -92,10 +92,6 @@ body {
 
         #hidden {
             display: none;
-            word-wrap: break-word;
-            max-width: 100%;
-            max-height: 100%;
-            overflow-y: auto;
             i {
                 float: right;
             }
@@ -106,8 +102,11 @@ body {
             }
 
             p {
+                word-wrap: break-word;
+                max-width: 100%;
+                max-height: 90%;
                 text-align: left;
-                text-overflow: ellipsis;
+                overflow-y: auto;
             }
         }
 
@@ -117,11 +116,21 @@ body {
             -webkit-margin-before: 0.5em;
             -webkit-margin-after: 0em;
             display: inline-block;
+            background: $background-grey;
+            color: rgba(255,255,255,0.7);
+            padding: 10px;
+            border-radius: 10px;
         }
 
         h1:hover {
-            color: $background-grey;
             cursor: hand;
+            background: $lighter-grey;
+        }
+
+        h1:active {
+            border-style: inset;
+            margin-bottom: -6px;
+            margin-left: 3px;
         }
 
         h2 {
@@ -130,13 +139,14 @@ body {
             font-size: $title-size * 0.75;
             -webkit-margin-before: 0.5em;
             -webkit-margin-after: 0.5em;
+            position: relative;
             font-style: italic;
         }
 
         #icons {
             -webkit-padding-start: 0px;
             margin-top: 6vh;
-            font-size: 11vmin;
+            font-size: 9.1vmin;
 
             .fa {
                 color: $background-grey;
