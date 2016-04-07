@@ -45,3 +45,14 @@ var pickRandomFile = function () {
 window.onload = function() {
     setTimeout(pickRandomFile, 50);
 };
+
+$(document).ready(function(){
+   $("#hide").click(function(event){
+     $("#visible").fadeOut();
+     $("#hidden").delay(500).fadeIn();
+   });
+   $("#show").click(function(event){
+     $("#hidden").fadeOut();
+     $("#visible").delay(500).fadeIn();
+   });
+ });
