@@ -73,8 +73,9 @@ body {
       body #middle-box #hidden p {
         word-wrap: break-word;
         max-width: 100%;
-        max-height: 80%;
+        max-height: 85%;
         text-align: left;
+        text-overflow: ellipsis;
         overflow-y: auto; }
     body #middle-box h1 {
       font-size: 4em;
