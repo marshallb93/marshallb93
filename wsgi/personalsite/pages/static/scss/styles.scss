@@ -3,7 +3,7 @@
 $font: 'Montserrat', sans-serif;
 $console-font: 'Lucida Console', monospace;
 $fallback-title-size: 4em;
-$title-size: 6vmin;
+$title-size: 5vmin;
 $background-grey: #4F5866;
 $lighter-grey: #717F93;
 $icon-orange: #E39B00;
@@ -82,14 +82,17 @@ body {
         }
     }
 
-    #middle-box {
+    #hidden-middle-box {
+        display:none;
+    }
+
+    .middle-box-class {
 
         background-filter: blur(5px);
         @include vertical-align(45%);
         border-radius: 25px;
-        padding: 20px;
-        width: 60%;
-        height: 40%;
+        padding: 5vmin;
+        display: inline-block;
         margin-left: auto;
         margin-right: auto;
         background: rgba(255,255,255,0.65);
@@ -152,10 +155,10 @@ body {
             font-style: italic;
         }
 
-        #icons {
+        .icons {
             padding-left: 0px;
             margin-top: 6vh;
-            font-size: 9.1vmin;
+            font-size: 8.5vmin;
 
             .fa {
                 color: $background-grey;

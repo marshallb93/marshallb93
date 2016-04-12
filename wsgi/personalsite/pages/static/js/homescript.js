@@ -43,16 +43,25 @@ var pickRandomFile = function () {
 }
 
 window.onload = function() {
+     $("#middle-box").height($("#hidden-middle-box").height());
+     $("#middle-box").width($("#hidden-middle-box").width());
     setTimeout(pickRandomFile, 50);
 };
 
+$(window).resize(function() {
+     $("#middle-box").height($("#hidden-middle-box").height());
+     $("#middle-box").width($("#hidden-middle-box").width());
+});
+
 $(document).ready(function(){
    $("#hide").click(function(event){
-     $("#visible").delay(150).fadeOut();
-     $("#hidden").delay(650).fadeIn();
+     $("#visible").delay(150).fadeOut(400, function(){
+        $("#hidden").fadeIn();
+     });
    });
    $("#show").click(function(event){
-     $("#hidden").fadeOut();
-     $("#visible").delay(500).fadeIn();
+     $("#hidden").fadeOut(400, function(){
+        $("#visible").fadeIn();
+     });
    });
  });
