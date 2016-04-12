@@ -87,6 +87,8 @@ body {
     }
 
     .middle-box-class {
+        min-height: 150px;
+        min-width: 130px;
 
         background-filter: blur(5px);
         @include vertical-align(45%);
