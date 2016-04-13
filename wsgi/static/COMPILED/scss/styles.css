@@ -1,6 +1,15 @@
 /* VARIABLES */
 /* MIXINS */
 /* STYLES */
+@media screen and (max-width: 235px), screen and (max-height: 235px) {
+  h1 {
+    font-size: 12px !important; }
+
+  h2 {
+    font-size: 9px !important; }
+
+  .icons {
+    font-size: 20px !important; } }
 html {
   height: 100%; }
 
@@ -50,7 +59,7 @@ body {
   body #hidden-middle-box {
     display: none; }
   body .middle-box-class {
-    min-height: 150px;
+    min-height: 80px;
     min-width: 130px;
     background-filter: blur(5px);
     position: relative;
