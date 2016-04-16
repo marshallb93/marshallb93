@@ -1,5 +1,9 @@
 {% extends 'index.html' %}
 
+{% load compile_static %}
+{% load static %}
+{% load staticfiles %}
+
 {% block additional-styles %}
 <link rel="stylesheet" href="{% static "scss/mobile.scss"|compile %}" />
 {% endblock %}
