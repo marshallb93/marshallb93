@@ -6,7 +6,6 @@ $lighter-grey: #717F93;
 $middle-box-color: #C1C5C9;
 $hazard-yellow: #F8BC28;
 $low-alpha-grey: rgba(255,255,255,0.65);
-$darkened-white: #E6E6E6;
 
 $icon-blue: #3B579D;
 $icon-red: #BB0706;
@@ -169,8 +168,8 @@ body {
             background: $background-grey;
             margin: auto;
             color: $middle-box-color;
-            text-shadow: -1px -1px 1px black, 1px 1px 1px $darkened-white;
-            box-shadow: -1px -1px 1px $darkened-white, 1px 1px 1px black;
+            text-shadow: -1px -1px 1px #000, 1px 1px 1px #fff;
+            box-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
             padding: 10px;
             border-radius: 10px;
         }
@@ -214,7 +213,7 @@ body {
             font-size: $title-size * 1.5;
             white-space: nowrap;
 
-            text-shadow: -1px -1px 1px $darkened-white, 1px 1px 1px black;
+            text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
 
             .fa {
                 color: $background-grey;

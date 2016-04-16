@@ -1,0 +1,302 @@
+import java.util.*;
+
+/**
+ * Created by Marshall Bradley (marshallbradley93@gmail.com)
+ * ---
+ * Class to simulate the network. System design directions:
+ *
+ * - Synchronous communication: each round lasts for 20ms
+ * - At each round the network receives the messages that the nodes want to send and delivers them
+ * - The network should make sure that:
+ * - A node can only send messages to its neighbours
+ * - A node can only send one message per neighbour per round
+ * - When a node fails, the network must inform all the node's neighbours about the failure
+ */
+
+public class Network extends Thread {
+
+    public enum FailureHandling {
+        NODE_HAMILTONIAN, NETWORK_HAMILTONIAN, INHERITED
+    }
+
+    private List<Node> nodes;
+    private List<Integer> failEvents;
+    private volatile int round = 0;
+    private final int maxRound;
+    private final FailureHandling failureHandling;
+
+    public Network(List<Node> nodes, List<Integer> failEvents, int maxRound, FailureHandling failureHandling) {
+        this.nodes = nodes;
+        this.failEvents = failEvents;
+        this.maxRound = maxRound;
+        this.failureHandling = failureHandling;
+    }
+
+    public void run() {
+        try {
+            simulate();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void simulate() throws InterruptedException {
+
+        long period = 20;
+
+        buildRing();
+
+        if (!failureHandling.equals(FailureHandling.NODE_HAMILTONIAN)) {
+            Node.setHamiltonian(false); // nodes don't need to handle network breaking themselves
+        }
+
+        for (Node node : nodes) {
+            node.setDaemon(true); // in order for threads to properly terminate
+            node.start();
+        }
+
+        // set when the network needs to reconstruct the ring
+        boolean checkRing = false;
+
+        boolean inherited = false;
+
+        // Integer for the id of the recipient and Strings for the messages
+        Map<Integer, List<String>> messages = new HashMap<>();
+
+        while (true) { // main simulation loop
+
+            long roundStart = System.currentTimeMillis();
+
+            deliverMessages(messages);  // deliver any outstanding messages from previous round
+                                        // delivery only happens once
+
+
+            if (inherited) { // wake nodes after their next neighbour is updated
+                inherited = false;
+                wakeAllNodes();
+            }
+
+            Thread.sleep(period/2 - (System.currentTimeMillis()- roundStart)); // network waits for nodes to settle
+
+            if (checkRing) { // fail event occurred last round, check ring integrity
+                checkRing = false;
+                checkRing();
+            }
+
+            messages = collectMessages();  // collect any messages nodes want to send during the round
+
+            // there must be no elect events scheduled, no messages queued, and a fail event still left to occur
+            boolean timeToExecuteFail = round > maxRound && messages.isEmpty() && !failEvents.isEmpty();
+
+            if (timeToExecuteFail) { // fail event is to be executed
+                messages = executeFail(messages);
+                if (failureHandling.equals(FailureHandling.NETWORK_HAMILTONIAN)) {
+                    checkRing = true; // network needs to check the ring itself
+                } else if (failureHandling.equals(FailureHandling.INHERITED)) {
+                    inherited = true;
+                }
+            }
+            Thread.sleep(period - (System.currentTimeMillis() - roundStart)); // network waits for round to end
+
+            if (round > maxRound && messages.isEmpty() && failEvents.isEmpty()) { // check end condition
+                break;
+            }
+
+            round++; // move onto next round
+        }
+    }
+
+    // At each round, the network delivers all the messages that it has collected from the nodes in the previous round
+    private void deliverMessages(Map<Integer, List<String>> messages) {
+
+        for (Node node : nodes) { // deliver messages to nodes
+            synchronized (node) {
+                node.setRound(round); // update node's round
+                int recipient = node.getNodeId();
+                if (messages.get(recipient) != null) { // check there are messages to deliver
+                    node.setMessages(messages.get(recipient));
+                    messages.remove(recipient); // remove messages once delivered
+                }
+                node.notifyAll();
+            }
+        }
+        messages.clear();
+    }
+
+    // Each round, the network collects all the messages that the nodes want to send to their neighbours.
+    // The network must ensure that a node can send only to its neighbours, one message per round per neighbour.
+    private Map<Integer, List<String>> collectMessages() {
+
+        // Integer for the id of the recipient and Strings for the messages
+        Map<Integer, List<String>> messages = new HashMap<>();
+        // first Integer is the id of the sending node, list is all nodes receiving from said node
+        Map<Integer, List<Integer>> sendingTo = new HashMap<>();
+
+        for (Node node : nodes) { // check for messages nodes want to send and update round
+            synchronized (node) {
+
+                int sender = node.getNodeId();
+                List<Message> nodeMessages = node.getMessages();
+                for (Message message : nodeMessages) {
+
+                    List<String> messageList;
+                    List<Integer> recipientList;
+                    int recipient = message.getRecipient(); // get message recipient
+                    String content = message.getContent();
+                    try {
+                        if (Node.getNodeById(nodes, recipient) == null) { // message recipient doesn't exist
+                            throw new NodeException(NodeException.ExceptionType.NON_EXISTENT,
+                                    sender, recipient, content);
+                        } else if (!node.getNeighbours().contains(recipient)) { // message recipient isn't neighbour
+                            throw new NodeException(NodeException.ExceptionType.NON_NEIGHBOUR,
+                                    sender, recipient, content);
+                        }
+                        if (messages.get(recipient) != null) { // entry already exists
+                            messageList = messages.get(recipient);
+                        } else { // create entry
+                            messageList = new ArrayList<>();
+                        }
+                        if (sendingTo.get(sender) != null) {
+                            if (!sendingTo.get(sender).contains(recipient)) { // node isn't sending a message to that recipient
+                                recipientList = sendingTo.get(sender);
+                            } else { // node is already sending a message to that recipient
+                                throw new NodeException(NodeException.ExceptionType.MULTIPLE,
+                                        sender, recipient, content);
+                            }
+                        } else {
+                            recipientList = new ArrayList<>();
+                        }
+                        messageList.add(content); // add message to list
+                        messages.put(recipient, messageList); // add messageList to incomingMessages
+                        recipientList.add(recipient); // add recipient to list
+                        sendingTo.put(sender, recipientList); // add recipientList to HashMap
+                        ScreenWriter.printSent(round, sender, recipient, content);  // message has been successfully sent
+                                                                                    // at this point
+
+                    } catch (NodeException ex) {
+                        // catch when a node tries to send to a non-existent node
+                        if (ex.getType() == NodeException.ExceptionType.NON_EXISTENT) {
+                            ScreenWriter.nonExistentRecipient(round, ex.getSender(), ex.getRecipient(), ex.getMessage());
+                            List<Integer> neighbours = node.getNeighbours();
+                            neighbours.remove((Integer) ex.getRecipient()); // remove node
+                            node.setNeighbours(neighbours);
+                        // catch when a node tries to send to a non-neighbour node
+                        } else if (ex.getType() == NodeException.ExceptionType.NON_NEIGHBOUR) {
+                            ScreenWriter.nonNeighbourRecipient(round, ex.getSender(), ex.getRecipient(), ex.getMessage());
+                        // catch when a node tries to send multiple messages to a node
+                        } else if (ex.getType() == NodeException.ExceptionType.MULTIPLE) {
+                            ScreenWriter.multipleMessages(round, ex.getSender(), ex.getRecipient(), ex.getMessage());
+                        }
+                    }
+                }
+                node.clearOutgoing();
+                node.notifyAll();
+            }
+        }
+        return messages;
+    }
+
+    private Map<Integer, List<String>> executeFail(Map<Integer, List<String>> messages) {
+        Node failedNode = Node.getNodeById(nodes, failEvents.get(0));
+        aggregateMessages(messages, FailEvent.execute(failedNode, round)); // add the messages that need to be broadcast
+        if (failureHandling.equals(FailureHandling.INHERITED)) {
+            inheritNextNeighbour(failedNode);
+        }
+        nodes.remove(failedNode); // remove node from graph
+        failEvents.remove(0); // remove fail event
+        return messages;
+    }
+
+    private Map<Integer, List<String>> aggregateMessages(Map<Integer, List<String>> messages, Map<Integer, String> messagesToAdd) {
+        for (Map.Entry<Integer, String> entry : messagesToAdd.entrySet()) {
+
+            List<String> list;
+            int key = entry.getKey(); // get message key
+
+            if (messages.get(key) != null) { // entry already exists
+                list = messages.get(key);
+            } else { // create entry
+                list = new ArrayList<>();
+            }
+
+            list.add(entry.getValue()); // add message to list
+            messages.put(key, list); // add list to HashMap
+        }
+        return messages;
+    }
+
+    private void inheritNextNeighbour(Node failedNode) {
+        Integer failedId = failedNode.getNodeId();
+        for (Integer neighbour : failedNode.getNeighbours()) {
+            Node neighbourNode = Node.getNodeById(nodes, neighbour);
+            if (neighbourNode.getNeighbours().get(0).equals(failedId)) { // node has next set to failedNode
+                Node failedNext = Node.getNodeById(nodes, failedNode.getNeighbours().get(0));
+                neighbourNode.addNeighbour(failedNext.getNodeId());
+                failedNext.addNeighbour(neighbourNode.getNodeId());
+                neighbourNode.setNextNeighbour(failedNext.getNodeId());
+                ScreenWriter.nodeInherited(round, failedId, neighbour, failedNext.getNodeId());
+                break; // since only one node should have its next set to the failedNode
+            }
+        }
+    }
+
+    private void buildRing() {  // sets each node's neighbours to be in the right order
+                                // as a by-product ensures all of a node's neighbours exist
+        for (int position = 0; position < nodes.size(); position++) {
+
+            // This ordering ensures if a node fails, we can simply remove the node from all neighbour tables
+            Node node = nodes.get(position);
+            List<Integer> originalNeighbours = node.getNeighbours();
+            List<Integer> orderedNeighbours = new ArrayList<>();
+
+            for (int i = 1; i < nodes.size(); i++) {
+                int modulusPosition = (position + i) % nodes.size(); // modulus to handle the ring topology of the network
+                if (originalNeighbours.contains(nodes.get(modulusPosition).getNodeId())) {
+                    orderedNeighbours.add(nodes.get(modulusPosition).getNodeId());
+                }
+            }
+            node.setNeighbours(orderedNeighbours);
+        }
+    }
+
+    private void checkRing() {
+
+        HamiltonianBuilder hamiltonianBuilder = new HamiltonianBuilder(nodes);
+        hamiltonianBuilder.run();
+
+        if (hamiltonianBuilder.isIntact()) { // ring is still intact
+            ScreenWriter.networkIntegrityMaintained(round);
+            wakeAllNodes();
+        } else if (hamiltonianBuilder.hasPath()) { // ring not intact
+            ScreenWriter.networkIntegrityLost(round);
+            rebuildRing(hamiltonianBuilder.getPath()); // rebuild ring
+            ScreenWriter.hamiltonianNetwork(round);
+        } else { // no hamiltonian path exists for this network, inform user and exit
+            ScreenWriter.nonHamiltonianNetwork(round);
+            System.exit(1);
+        }
+    }
+
+    private void rebuildRing(List<Integer> path) {
+        for (int i = 0; i < path.size() - 1; i++) {
+            Node currentNode = Node.getNodeById(nodes, path.get(i));
+            synchronized (currentNode) {
+                currentNode.setNextNeighbour(path.get(i + 1));
+                currentNode.notifyAll();
+            }
+        }
+        Node finalNode = nodes.get(nodes.size() - 1);
+        synchronized (finalNode) {
+            finalNode.setNextNeighbour(path.get(0));
+            finalNode.notifyAll();
+        }
+    }
+
+    private void wakeAllNodes() {
+        for (Node node : nodes) { // wake all nodes again
+            synchronized (node) {
+                node.notifyAll();
+            }
+        }
+    }
+}

@@ -94,8 +94,8 @@ body {
       background: #4F5866;
       margin: auto;
       color: #C1C5C9;
-      text-shadow: -1px -1px 1px #000, 1px 1px 1px #fff;
-      box-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
+      text-shadow: -1px -1px 1px black, 1px 1px 1px #E6E6E6;
+      box-shadow: -1px -1px 1px #E6E6E6, 1px 1px 1px black;
       padding: 10px;
       border-radius: 10px; }
     body .middle-box-class h1:hover {
@@ -106,7 +106,8 @@ body {
       border-style: inset;
       margin-bottom: -6px;
       margin-left: 3px;
-      box-shadow: none; }
+      box-shadow: none;
+      background: #717F93; }
     body .middle-box-class h2 {
       color: #4F5866;
       font-size: 2.4em;
@@ -127,7 +128,7 @@ body {
       margin-bottom: 6vh;
       font-size: 12vmin;
       white-space: nowrap;
-      text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000; }
+      text-shadow: -1px -1px 1px #E6E6E6, 1px 1px 1px black; }
       body .middle-box-class .icons .fa {
         color: #4F5866;
         margin-right: 0.1em;

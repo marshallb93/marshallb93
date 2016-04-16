@@ -28,12 +28,12 @@ var displayFile = function (file) {
 var pickRandomFile = function () {
     if (!showing) {
         showing = true;
-        var files = ["https://raw.githubusercontent.com/marshallb93/ds_coursework/master/src/main/java/Network.java",
-                     "https://raw.githubusercontent.com/marshallb93/pa_coursework/master/src/main/java/SimpleCache.java",
-                     "https://raw.githubusercontent.com/SLIP-Group-B-2015/Raspberry_Python/master/src/main.py",
-                     "https://raw.githubusercontent.com/marshallb93/personal_site/master/wsgi/personalsite/pages/templates/main_index.html",
-                     "https://raw.githubusercontent.com/marshallb93/personal_site/master/wsgi/personalsite/pages/static/scss/styles.scss",
-                     "https://raw.githubusercontent.com/marshallb93/es_coursework/master/working/main.c"];
+        var files = ["/static/Index.txt",
+                     "/static/Main.txt",
+                     "/static/Network.txt",
+                     "/static/Raspberry_Python.txt",
+                     "/static/SimpleCache.txt",
+                     "/static/Styles.txt"];
         var random =  Math.floor(Math.random() * files.length);
         displayFile(files[random]);
     }

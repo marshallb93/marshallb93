@@ -1,0 +1,336 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+/**
+ * Created by Marshall Bradley (marshallbradley93@gmail.com)
+ * ---
+ * The class responsible for simulating a processor's cache
+ * Represented internally as a key, value store between index (Integer) and CacheEntry, which contains the tag and state
+ * Basically all protocol specific code is implemented at this level
+ */
+
+public class SimpleCache {
+
+    public enum ProtocolType { // type of protocol
+        MSI, MESI, MES
+    }
+
+    private Simulator simulator; // each cache needs to reference the simulator, to snoop on other caches
+
+    private Integer lineSize; // number of words in a cache line
+    private Integer cacheSize; // number of lines in the cache
+
+    private Integer processor; // processor index
+
+    private ProtocolType protocolType;
+
+    private Map<Integer, CacheEntry> cache = new HashMap<>(); // line/tag is stored in a Map<Integer, CacheEntry>
+
+    public SimpleCache(Simulator simulator, Integer processor, Integer lineSize, Integer cacheSize, ProtocolType protocolType) {
+
+        if (lineSize < 0 || cacheSize < 0) {
+            throw new IllegalArgumentException("Sizes cannot be negative.");
+        }
+
+        // Set internal state
+        this.simulator = simulator;
+        this.processor = processor;
+        this.lineSize = lineSize;
+        this.cacheSize = cacheSize;
+        this.protocolType = protocolType;
+    }
+
+    // Calculate tag
+    private Integer calculateTag(Integer word) {
+        return word / cacheSize;
+    }
+
+    // Calculate index
+    private Integer calculateIndex(Integer word) {
+        Integer startingWord = word - (word % lineSize);
+        return (startingWord / lineSize) % cacheSize;
+    }
+
+    // Called on LOCAL cache writes
+    public Message write(Integer word) {
+
+        // Init possible outcomes
+        boolean hit = false;
+        boolean writeBack = false;
+        boolean shared = false;
+        boolean tagMatch = false;
+        boolean notifyRemotes = false;
+        CacheEntry.State originalState = null;
+
+        // Attempt to fetch correct CacheEntry after index calculation
+        Integer tag = calculateTag(word);
+        Integer index = calculateIndex(word);
+        CacheEntry entry = cache.get(index);
+
+        if (entry != null) { // block present (not necessarily with matching tag though)
+
+            originalState = entry.getState();
+            tagMatch = entry.getTag().equals(tag);
+
+            boolean valid = !entry.getState().equals(CacheEntry.State.INVALID);
+            shared = entry.getState().equals(CacheEntry.State.SHARED);
+
+            if (tagMatch && valid) {
+                hit = true;
+
+                // Switch on protocol type, and implement FSM transitions
+                if (this.protocolType.equals(ProtocolType.MSI) || this.protocolType.equals(ProtocolType.MESI)) {
+
+                    if (shared) {
+                        simulator.incrementGlobalInvalidations();
+                        notifyRemotes = true;
+                    }
+                    entry.setState(CacheEntry.State.MODIFIED);
+
+                } else if (this.protocolType.equals(ProtocolType.MES)) {
+
+                    if (shared) {
+                        simulator.incrementGlobalUpdates();
+                        notifyRemotes = true;
+                    } else {
+                        entry.setState(CacheEntry.State.MODIFIED);
+                    }
+
+                } else {
+                    throw new IllegalStateException("Unexpected protocol encountered");
+                }
+            }
+        }
+
+        // Cache miss
+        if (!hit) {
+            if (entry != null) {
+                if (originalState.equals(CacheEntry.State.MODIFIED)) {
+                    writeBack = true; // always need to Write-Back if evicting a MODIFIED block
+                }
+            }
+
+            // Switch on protocol type, and implement FSM transitions for local misses
+            if (this.protocolType.equals(ProtocolType.MSI) || this.protocolType.equals(ProtocolType.MESI)) { // MSI/MESI protocols
+                simulator.incrementGlobalInvalidations();
+                cache.put(index, new CacheEntry(tag, CacheEntry.State.MODIFIED));
+
+            } else if (this.protocolType.equals(ProtocolType.MES)) { // MES protocol
+
+                if (simulator.queryRemotes(processor, word)) {
+                    cache.put(index, new CacheEntry(tag, CacheEntry.State.MODIFIED));
+
+                } else {
+                    simulator.incrementGlobalUpdates();
+                    cache.put(index, new CacheEntry(tag, CacheEntry.State.SHARED));
+                }
+
+            } else {
+                throw new IllegalStateException("Unexpected protocol encountered");
+            }
+        }
+
+        printLocalEvent(originalState, tagMatch);
+
+        if (notifyRemotes) {
+            boolean verbose = Simulator.getVerbose();
+            Simulator.setVerbose(false); // disable verbose output temporarily, as cache has in fact hit
+            simulator.notifyRemotes(TraceEntry.OperationType.WRITE, processor, word);
+            Simulator.setVerbose(verbose);
+        }
+
+        return new Message(hit, writeBack, shared, Message.MessageType.LOCAL);
+    }
+
+    // Called on LOCAL cache reads
+    public Message read(Integer word) {
+
+        // Init possible outcomes
+        boolean hit = false;
+        boolean writeBack = false;
+        boolean shared = false;
+        boolean tagMatch = false;
+        CacheEntry.State originalState = null;
+
+        // Attempt to fetch correct CacheEntry after index calculation
+        Integer tag = calculateTag(word);
+        Integer index = calculateIndex(word);
+        CacheEntry entry = cache.get(index);
+
+        if (entry != null) { // block present (not necessarily with matching tag though)
+
+            originalState = entry.getState();
+            tagMatch = entry.getTag().equals(tag);
+
+            boolean isValid = !entry.getState().equals(CacheEntry.State.INVALID);
+
+            // FSM transitions are the same regardless of protocol for LOCAL reads
+            if (tagMatch && isValid) {
+                hit = true;
+                if (entry.getState().equals(CacheEntry.State.SHARED)) {
+                    shared = true;
+                }
+            }
+        }
+
+        if (!hit) {
+
+            if (entry != null) {
+                if (originalState.equals(CacheEntry.State.MODIFIED)) {
+                    writeBack = true; // always need to Write-Back if evicting a MODIFIED block
+                }
+            }
+
+            // Switch on protocol type, and implement FSM transitions for local misses
+            if (this.protocolType.equals(ProtocolType.MSI)) {
+
+                cache.put(index, new CacheEntry(tag, CacheEntry.State.SHARED));
+
+            } else if (this.protocolType.equals(ProtocolType.MESI) || this.protocolType.equals(ProtocolType.MES)) {
+
+                CacheEntry.State state = simulator.queryRemotes(processor, word) ? CacheEntry.State.EXCLUSIVE : CacheEntry.State.SHARED;
+                cache.put(index, new CacheEntry(tag, state));
+
+            } else {
+                throw new IllegalStateException("Unexpected protocol encountered");
+            }
+        }
+
+        printLocalEvent(originalState, tagMatch);
+        return new Message(hit, writeBack, shared, Message.MessageType.LOCAL);
+    }
+
+    public Message remoteWrite(Integer word) {
+
+        boolean invalidation = false;
+        boolean writeUpdate = false;
+        boolean writeBack = false;
+        boolean tagMatch = false;
+        CacheEntry.State originalState = null;
+
+        Integer tag = calculateTag(word);
+        Integer index = calculateIndex(word);
+        CacheEntry entry = cache.get(index);
+
+        if (entry != null) {
+
+            originalState = entry.getState();
+            tagMatch = entry.getTag().equals(tag);
+
+            boolean isValid = !entry.getState().equals(CacheEntry.State.INVALID);
+            boolean isModified = entry.getState().equals(CacheEntry.State.MODIFIED);
+
+            if (tagMatch && isValid) {
+                if (isModified) {
+                    writeBack = true;
+                }
+                if (this.protocolType.equals(ProtocolType.MSI) || this.protocolType.equals(ProtocolType.MESI)) { // MSI/MESI
+                    invalidation = true;
+                    entry.setState(CacheEntry.State.INVALID);
+
+                } else if (this.protocolType.equals(ProtocolType.MES)) { // MES
+                    writeUpdate = true;
+                    entry.setState(CacheEntry.State.SHARED);
+                } else {
+                    throw new IllegalStateException("Unexpected protocol encountered");
+                }
+            }
+        }
+
+        printRemoteEvent(originalState, tagMatch);
+        return new Message(invalidation, writeBack, writeUpdate, Message.MessageType.REMOTE);
+    }
+
+    public Message remoteRead(Integer word) {
+
+        boolean writeBack = false;
+        boolean tagMatch = false;
+        CacheEntry.State originalState = null;
+
+        Integer tag = calculateTag(word);
+        Integer index = calculateIndex(word);
+        CacheEntry entry = cache.get(index);
+
+        if (entry != null) {
+
+            originalState = entry.getState();
+            tagMatch = entry.getTag().equals(tag);
+            boolean isValid = !entry.getState().equals(CacheEntry.State.INVALID);
+            boolean isModified = entry.getState().equals(CacheEntry.State.MODIFIED);
+
+            if (tagMatch && isValid) {
+                if (isModified) {
+                    writeBack = true;
+                }
+                entry.setState(CacheEntry.State.SHARED);
+            }
+        }
+
+        printRemoteEvent(originalState, tagMatch);
+        return new Message(writeBack); // only write-backs should happen on remote reads
+    }
+
+    public boolean hasWord(Integer word) {
+
+        Integer index = calculateIndex(word);
+        Integer tag = calculateTag(word);
+        CacheEntry entry = cache.get(index);
+
+        if (entry != null) {
+            boolean isValid = !entry.getState().equals(CacheEntry.State.INVALID);
+            boolean tagMatch = entry.getTag().equals(tag);
+            if (tagMatch && isValid) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static ProtocolType getProtocol(String string) throws IllegalArgumentException {
+        if (string.equals("MSI")) {
+            return ProtocolType.MSI;
+        } else if (string.equals("MESI")) {
+            return ProtocolType.MESI;
+        } else if (string.equals("MES")) {
+            return ProtocolType.MES;
+        } else {
+            throw new IllegalArgumentException("Protocol type \"" + string + "\" does not match expected");
+        }
+    }
+
+    private void printLocalEvent(CacheEntry.State originalState, boolean tagMatch) {
+        if (Simulator.isVerbose()) {
+            if (tagMatch) {
+                System.out.print(", found in state " + originalState + " in own cache");
+            } else {
+                System.out.print(", not found in own cache");
+            }
+        }
+    }
+
+    private void printRemoteEvent(CacheEntry.State originalState, boolean tagMatch) {
+        if (Simulator.isVerbose()) {
+            if (tagMatch) {
+                if (!originalState.equals(CacheEntry.State.INVALID)) {
+                    System.out.print(", found in state " + originalState + " in P" + processor);
+                }
+            }
+        }
+    }
+
+    public void printContents() {
+        SortedSet<Integer> keys = new TreeSet<>(cache.keySet());
+        for (Integer key : keys) {
+            int tag = cache.get(key).getTag();
+            CacheEntry.State state = cache.get(key).getState();
+            System.out.println("Line " + key + ": contains tag " + tag + " in state " + state);
+        }
+    }
+
+    public int size() {
+        return cache.size();
+    }
+}
