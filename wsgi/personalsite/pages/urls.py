@@ -7,5 +7,5 @@ handler404 = 'pages.views.page_not_found'
 handler500 = 'pages.views.server_error'
 
 urlpatterns = [
-    url(r'^$', TemplateView.as_view(template_name='main_index.html'))
+    url(r'^$', TemplateView.as_view(template_name='index.html'))
 ]

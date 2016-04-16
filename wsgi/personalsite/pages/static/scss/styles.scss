@@ -1,13 +1,26 @@
 /* VARIABLES */
 
-$font: 'Montserrat', sans-serif;
-$console-font: 'Lucida Console', monospace;
-$fallback-title-size: 4em;
-$title-size: 5vmin;
+// Colors
 $background-grey: #4F5866;
 $lighter-grey: #717F93;
-$icon-orange: #E39B00;
+$middle-box-color: #C1C5C9;
+$hazard-yellow: #F8BC28;
+$low-alpha-grey: rgba(255,255,255,0.65);
+
+$icon-blue: #3B579D;
+$icon-red: #BB0706;
+$mailbox-yellow: #FCC21B;
+
+// Fonts
+$font: 'Montserrat', sans-serif;
+$console-font: 'Lucida Console', monospace;
+
+// Sizing
+$fallback-title-size: 4em;
+$title-size: 8vmin;
 $error-text-size: 20vw;
+
+// Speeds
 $transition-speed: 0.3s;
 
 /* MIXINS */
@@ -20,29 +33,39 @@ $transition-speed: 0.3s;
   transform: translateY(-$height);
 }
 
+@mixin transition($speed, $type) {
+    -webkit-transition: $speed $type;
+    -moz-transition: $speed $type;
+    -o-transition: $speed $type;
+    transition: $speed $type;
+}
+
 /* STYLES */
 
 @media screen and (max-width: 235px), screen and (max-height: 235px) {
-		h1 {
-			font-size: 12px !important;
-		}
-		h2 {
-			font-size: 9px !important;
-		}
-		.icons {
-			font-size: 20px !important;
-		}
-}
 
-html {
-    height: 100%;
+    .middle-box-class {
+
+        h1 {
+            font-size: 12px !important;
+        }
+
+        h2 {
+            font-size: 9px !important;
+        }
+
+        .icons {
+            font-size: 20px !important;
+        }
+    }
 }
 
 body {
+
     height: 100%;
     text-align: center;
     font-family: $font;
-    margin: 0px;
+    margin: 0;
     background-color: $background-grey;
     overflow: hidden;
 
@@ -57,23 +80,18 @@ body {
         }
 
         #home {
-            -webkit-padding-start: 0px;
+            padding-right: 0;
             margin-top: 6vh;
-            font-size: 16vmin;
+            font-size: $title-size * 1.6;
 
             .fa {
                 color: $lighter-grey;
-                margin-right: 0.1em;
-                margin-left: 0.1em;
-                -webkit-transition: $transition-speed ease-out;
-                -moz-transition: $transition-speed ease-out;
-                -o-transition: $transition-speed ease-out;
-                transition: $transition-speed ease-out;
+                @include transition($transition-speed, ease-out);
             }
 
             .fa:hover {
-                transform: scale(1.5);
                 color: white;
+                transform: scale(1.5);
             }
         }
     }
@@ -81,11 +99,11 @@ body {
     #background {
 
         padding-left: 1vw;
+        bottom: 1.5em;
         position: absolute;
         text-align: left;
         z-index: -1;
         position: fixed;
-        bottom: 1.5em;
 
         #code {
             color: transparent;
@@ -95,54 +113,62 @@ body {
     }
 
     #hidden-middle-box {
-        display:none;
+        display: none;
     }
 
     .middle-box-class {
+
+        @include vertical-align(45%);
+
         min-height: 80px;
         min-width: 130px;
-
-        background-filter: blur(5px);
-        @include vertical-align(45%);
+        margin: 20px;
         border-radius: 25px;
-        padding: 5vmin;
+        padding: $title-size * 0.65;
         display: inline-block;
+        overflow: hidden;
         margin-left: auto;
         margin-right: auto;
-        background: rgba(255,255,255,0.65);
+        background: $low-alpha-grey;
 
         #hidden {
-            height: 100%;
             display: none;
+            text-align: right;
+            height: 100%;
+
             i {
-                float: right;
+                display: inline-block;
             }
 
             i:hover {
-                color: #BB0706;
+                color: $icon-red;
                 cursor: hand;
                 cursor: pointer;
             }
 
-            p {
-                word-wrap: break-word;
-                max-width: 100%;
-                max-height: 85%;
+            .bio {
                 text-align: left;
-                overflow-y: auto;
+                overflow: hidden;
+
+                p {
+                    margin: 0;
+                    word-wrap: break-word;
+                    max-width: 100%;
+                    max-height: 90%;
+                    overflow-y: auto;
+                }
             }
         }
 
         h1 {
+            white-space: nowrap;
             font-size: $fallback-title-size;
             font-size: $title-size;
-            -webkit-margin-before: 0.5em;
-            -webkit-margin-after: 0em;
             display: inline-block;
             background: $background-grey;
-            display: inline-block;
             margin: auto;
-            color: rgba(255,255,255,0.65);
+            color: $middle-box-color;
+            text-shadow: -1px -1px 1px #000, 1px 1px 1px #fff;
             padding: 10px;
             border-radius: 10px;
         }
@@ -161,28 +187,35 @@ body {
 
         h2 {
             color: $background-grey;
-            font-size: $fallback-title-size * 0.75;
-            font-size: $title-size * 0.75;
+            font-size: $fallback-title-size * 0.6;
+            font-size: $title-size * 0.6;
             margin-top: 0.5em;
             margin-bottom: 0.5em;
             position: relative;
             font-style: italic;
         }
 
+        h3 {
+            color: $background-grey;
+            font-size: $title-size * 0.85;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
         .icons {
-            padding-left: 0px;
+            padding-left: 0;
             margin-top: 6vh;
-            font-size: 8.5vmin;
-						white-space: nowrap;
+            margin-bottom: 6vh;
+            font-size: $title-size * 1.5;
+            white-space: nowrap;
+
+            text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
 
             .fa {
                 color: $background-grey;
                 margin-right: 0.1em;
                 margin-left: 0.1em;
-                -webkit-transition: $transition-speed ease-out;
-                -moz-transition: $transition-speed ease-out;
-                -o-transition: $transition-speed ease-out;
-                transition: $transition-speed ease-out;
+                @include transition($transition-speed, ease-out);
             }
 
             .fa:hover {
@@ -194,19 +227,19 @@ body {
             }
 
             .fa-linkedin-square:hover {
-                color: #3B579D;
+                color: $icon-blue;
             }
 
             .fa-facebook-square:hover {
-                color: #3B579D;
+                color: $icon-blue;
             }
 
-            .fa-file-pdf-o:hover {
-                color: #BB0706;
+            .fa-user:hover {
+                color: $icon-red;
             }
 
             .fa-envelope:hover {
-                color: #FCC21B;
+                color: $mailbox-yellow;
             }
         }
     }

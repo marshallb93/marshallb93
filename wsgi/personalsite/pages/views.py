@@ -8,6 +8,7 @@ from django.template import RequestContext
 def bad_request(request):
     response = render_to_response(
         '400.html',
+        {},
         context_instance=RequestContext(request)
     )
 
@@ -19,7 +20,8 @@ def bad_request(request):
 # HTTP Error 403
 def permsission_denied(request):
     response = render_to_response(
-        '400.html',
+        '403.html',
+        {},
         context_instance=RequestContext(request)
     )
 
@@ -32,6 +34,7 @@ def permsission_denied(request):
 def page_not_found(request):
     response = render_to_response(
         '404.html',
+        {},
         context_instance=RequestContext(request)
     )
 
@@ -44,6 +47,7 @@ def page_not_found(request):
 def server_error(request):
     response = render_to_response(
         '500.html',
+        {},
         context_instance=RequestContext(request)
     )
 

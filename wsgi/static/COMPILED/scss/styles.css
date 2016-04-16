@@ -2,22 +2,17 @@
 /* MIXINS */
 /* STYLES */
 @media screen and (max-width: 235px), screen and (max-height: 235px) {
-  h1 {
+  .middle-box-class h1 {
     font-size: 12px !important; }
-
-  h2 {
+  .middle-box-class h2 {
     font-size: 9px !important; }
-
-  .icons {
+  .middle-box-class .icons {
     font-size: 20px !important; } }
-html {
-  height: 100%; }
-
 body {
   height: 100%;
   text-align: center;
   font-family: "Montserrat", sans-serif;
-  margin: 0px;
+  margin: 0;
   background-color: #4F5866;
   overflow: hidden; }
   body #error h1 {
@@ -31,27 +26,25 @@ body {
     font: 20vw "Lucida Console", monospace;
     font-weight: bold; }
   body #error #home {
-    -webkit-padding-start: 0px;
+    padding-right: 0;
     margin-top: 6vh;
-    font-size: 16vmin; }
+    font-size: 12.8vmin; }
     body #error #home .fa {
       color: #717F93;
-      margin-right: 0.1em;
-      margin-left: 0.1em;
       -webkit-transition: 0.3s ease-out;
       -moz-transition: 0.3s ease-out;
       -o-transition: 0.3s ease-out;
       transition: 0.3s ease-out; }
     body #error #home .fa:hover {
-      transform: scale(1.5);
-      color: white; }
+      color: white;
+      transform: scale(1.5); }
   body #background {
     padding-left: 1vw;
+    bottom: 1.5em;
     position: absolute;
     text-align: left;
     z-index: -1;
-    position: fixed;
-    bottom: 1.5em; }
+    position: fixed; }
     body #background #code {
       color: transparent;
       text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
@@ -59,45 +52,49 @@ body {
   body #hidden-middle-box {
     display: none; }
   body .middle-box-class {
-    min-height: 80px;
-    min-width: 130px;
-    background-filter: blur(5px);
     position: relative;
     top: 45%;
     -webkit-transform: translateY(-45%);
     -ms-transform: translateY(-45%);
     transform: translateY(-45%);
+    min-height: 80px;
+    min-width: 130px;
+    margin: 20px;
     border-radius: 25px;
-    padding: 5vmin;
+    padding: 5.2vmin;
     display: inline-block;
+    overflow: hidden;
     margin-left: auto;
     margin-right: auto;
     background: rgba(255, 255, 255, 0.65); }
     body .middle-box-class #hidden {
-      height: 100%;
-      display: none; }
+      display: none;
+      text-align: right;
+      height: 100%; }
       body .middle-box-class #hidden i {
-        float: right; }
+        display: inline-block; }
       body .middle-box-class #hidden i:hover {
         color: #BB0706;
         cursor: hand;
         cursor: pointer; }
-      body .middle-box-class #hidden p {
-        word-wrap: break-word;
-        max-width: 100%;
-        max-height: 85%;
+      body .middle-box-class #hidden .bio {
         text-align: left;
-        overflow-y: auto; }
+        overflow: hidden; }
+        body .middle-box-class #hidden .bio p {
+          margin: 0;
+          word-wrap: break-word;
+          max-width: 100%;
+          max-height: 90%;
+          overflow-y: auto; }
     body .middle-box-class h1 {
+      white-space: nowrap;
       font-size: 4em;
-      font-size: 5vmin;
-      -webkit-margin-before: 0.5em;
-      -webkit-margin-after: 0em;
+      font-size: 8vmin;
       display: inline-block;
       background: #4F5866;
-      display: inline-block;
       margin: auto;
-      color: rgba(255, 255, 255, 0.65);
+      color: #C1C5C9;
+      text-shadow: -1px -1px 1px #000, 1px 1px 1px #fff;
       padding: 10px;
       border-radius: 10px; }
     body .middle-box-class h1:hover {
@@ -110,16 +107,24 @@ body {
       margin-left: 3px; }
     body .middle-box-class h2 {
       color: #4F5866;
-      font-size: 3em;
-      font-size: 3.75vmin;
+      font-size: 2.4em;
+      font-size: 4.8vmin;
       margin-top: 0.5em;
       margin-bottom: 0.5em;
       position: relative;
       font-style: italic; }
+    body .middle-box-class h3 {
+      color: #4F5866;
+      font-size: 6.8vmin;
+      margin-top: 0;
+      margin-bottom: 0; }
     body .middle-box-class .icons {
-      padding-left: 0px;
+      padding-left: 0;
       margin-top: 6vh;
-      font-size: 8.5vmin; }
+      margin-bottom: 6vh;
+      font-size: 12vmin;
+      white-space: nowrap;
+      text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000; }
       body .middle-box-class .icons .fa {
         color: #4F5866;
         margin-right: 0.1em;
@@ -136,7 +141,7 @@ body {
         color: #3B579D; }
       body .middle-box-class .icons .fa-facebook-square:hover {
         color: #3B579D; }
-      body .middle-box-class .icons .fa-file-pdf-o:hover {
+      body .middle-box-class .icons .fa-user:hover {
         color: #BB0706; }
       body .middle-box-class .icons .fa-envelope:hover {
         color: #FCC21B; }
