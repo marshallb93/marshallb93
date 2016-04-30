@@ -213,13 +213,14 @@ body {
             margin-bottom: 6vh;
             font-size: $title-size * 1.5;
             white-space: nowrap;
-
             text-shadow: -1px -1px 1px $darkened-white, 1px 1px 1px black;
 
             .fa {
                 color: $background-grey;
                 margin-right: 0.1em;
                 margin-left: 0.1em;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
                 @include transition($transition-speed, ease-out);
             }
 
