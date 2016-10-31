@@ -13,7 +13,6 @@ import os
 DJ_PROJECT_DIR = os.path.dirname(__file__)
 BASE_DIR = os.path.dirname(DJ_PROJECT_DIR)
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'mysecretkey'
 
 DEBUG = False
@@ -93,7 +92,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/'
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 
 STATICFILES_FINDERS = (

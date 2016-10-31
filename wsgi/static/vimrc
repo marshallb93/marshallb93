@@ -1,0 +1,8 @@
+noremap <Up> <nop>
+noremap <Right> <nop>
+noremap <Down> <nop>
+noremap <Left> <nop>
+set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+syntax on
+filetype on
+au BufNewFile,BufRead *.glsl set filetype=c
