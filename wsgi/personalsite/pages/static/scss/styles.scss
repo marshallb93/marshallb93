@@ -1,9 +1,10 @@
 /* VARIABLES */
 
-// Colors
-$background-grey: #4F5866;
+/// Colors
+$background-color: #ADD8E6;
 $lighter-grey: #717F93;
-$middle-box-color: #C1C5C9;
+$darker-grey: #4F5866;
+$middle-box-color: #E2F1F6;
 $hazard-yellow: #F8BC28;
 $low-alpha-grey: rgba(255,255,255,0.65);
 $darkened-white: #E6E6E6;
@@ -67,7 +68,7 @@ body {
     text-align: center;
     font-family: $font;
     margin: 0;
-    background-color: $background-grey;
+    background-color: $background-color;
     overflow: hidden;
 
     #error  {
@@ -75,7 +76,7 @@ body {
         h1 {
             @include vertical-align(-40%);
             color: white;
-            text-shadow: 3px 3px 0px $background-grey, 5px 5px 0px $lighter-grey;
+            text-shadow: 3px 3px 0px $darker-grey, 5px 5px 0px $lighter-grey;
             font: $error-text-size $console-font;
             font-weight: bold;
         }
@@ -108,7 +109,7 @@ body {
 
         #code {
             color: transparent;
-            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+            text-shadow: 0 0 5px rgba(79,88,102,0.6);
             font-family: $console-font;
         }
     }
@@ -166,7 +167,7 @@ body {
             font-size: $fallback-title-size;
             font-size: $title-size;
             display: inline-block;
-            background: $background-grey;
+            background: $darker-grey;
             margin: auto;
             color: $middle-box-color;
             text-shadow: -1px -1px 1px black, 1px 1px 1px $darkened-white;
@@ -190,7 +191,7 @@ body {
         }
 
         h2 {
-            color: $background-grey;
+            color: $darker-grey;
             font-size: $fallback-title-size * 0.6;
             font-size: $title-size * 0.6;
             margin-top: 0.5em;
@@ -200,7 +201,7 @@ body {
         }
 
         h3 {
-            color: $background-grey;
+            color: $darker-grey;
             font-size: $fallback-title-size * 0.85;
             font-size: $title-size * 0.85;
             margin-top: 0;
@@ -216,7 +217,7 @@ body {
             text-shadow: -1px -1px 1px $darkened-white, 1px 1px 1px black;
 
             .fa {
-                color: $background-grey;
+                color: $darker-grey;
                 margin-right: 0.1em;
                 margin-left: 0.1em;
                 -webkit-transform: translateZ(0);

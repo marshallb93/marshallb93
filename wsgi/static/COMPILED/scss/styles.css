@@ -13,7 +13,7 @@ body {
   text-align: center;
   font-family: "Montserrat", sans-serif;
   margin: 0;
-  background-color: #4F5866;
+  background-color: #ADD8E6;
   overflow: hidden; }
   body #error h1 {
     position: relative;
@@ -47,7 +47,7 @@ body {
     position: fixed; }
     body #background #code {
       color: transparent;
-      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      text-shadow: 0 0 5px rgba(79, 88, 102, 0.6);
       font-family: "Lucida Console", monospace; }
   body #hidden-middle-box {
     display: none; }
@@ -93,7 +93,7 @@ body {
       display: inline-block;
       background: #4F5866;
       margin: auto;
-      color: #C1C5C9;
+      color: #E2F1F6;
       text-shadow: -1px -1px 1px black, 1px 1px 1px #E6E6E6;
       box-shadow: -1px -1px 1px #E6E6E6, 1px 1px 1px black;
       padding: 10px;
@@ -133,6 +133,8 @@ body {
         color: #4F5866;
         margin-right: 0.1em;
         margin-left: 0.1em;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
         -webkit-transition: 0.3s ease-out;
         -moz-transition: 0.3s ease-out;
         -o-transition: 0.3s ease-out;
