@@ -28,12 +28,12 @@ var displayFile = function (file) {
 var pickRandomFile = function () {
     if (!showing) {
         showing = true;
-        var files = ["/static/Index.txt",
-                     "/static/Main.txt",
-                     "/static/Network.txt",
-                     "/static/Raspberry_Python.txt",
-                     "/static/SimpleCache.txt",
-                     "/static/Styles.txt"];
+        var files = ["/files/samples/index",
+                     "/files/samples/main",
+                     "/files/samples/network",
+                     "/files/samples/raspberry",
+                     "/files/samples/cache",
+                     "/files/samples/style"];
         var random =  Math.floor(Math.random() * files.length);
         displayFile(files[random]);
     }
